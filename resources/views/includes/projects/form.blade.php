@@ -63,6 +63,19 @@
                 </div>
             </div>
         </div>
+        <div class="row">
+            <div class="col-12 mb-3">
+                @foreach ($technologys as $technology)
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="checkbox" id="tag-{{ $loop->iteration }}" value="{{ $technology->id }}" name="technologys[]">
+                        <label class="form-check-label" for="tag-{{ $loop->iteration }}">{{ $technology->label }}</label>
+                    </div>
+                @endforeach
+                @error('technologys')
+                <small class="text-danger">{{ $message }}</small>
+                @enderror
+            </div>
+        </div>
         <div class="d-flex justify-content-between">
             <button type="submit" class="btn btn-small btn-success me-2">Save</button>
             <a href="{{ route('admin.projects.index') }}" class="btn btn-small btn-secondary"><i class="fa-solid fa-arrow-left me-2"></i>Go back</a>
