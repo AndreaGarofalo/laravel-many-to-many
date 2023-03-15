@@ -13,7 +13,7 @@ class TechnologySeeder extends Seeder
      */
     public function run(): void
     {
-        $technologys = [
+        $technologies = [
             ['label' => 'HTML', 'color' => 'danger'],
             ['label' => 'CSS', 'color' => 'info'],
             ['label' => 'ES6', 'color' => 'warning'],
@@ -24,7 +24,7 @@ class TechnologySeeder extends Seeder
             ['label' => 'SASS', 'color' => 'danger-emphasis'],
         ];
 
-        foreach($technologys as $technology){
+        foreach($technologies as $technology){
             $new_technology = new Technology();
             $new_technology->label = $technology['label'];
             $new_technology->color = $technology['color'];

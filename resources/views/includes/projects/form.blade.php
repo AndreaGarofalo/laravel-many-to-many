@@ -65,13 +65,13 @@
         </div>
         <div class="row">
             <div class="col-12 mb-3">
-                @foreach ($technologys as $technology)
+                @foreach ($technologies as $technology)
                     <div class="form-check form-check-inline">
-                        <input class="form-check-input" type="checkbox" id="tag-{{ $loop->iteration }}" value="{{ $technology->id }}" name="technologys[]">
+                        <input class="form-check-input" type="checkbox" id="tag-{{ $loop->iteration }}" value="{{ $technology->id }}" name="technologies[]" @if (in_array($technology->id, old('technologies', $project_technologies ?? []))) checked @endif>
                         <label class="form-check-label" for="tag-{{ $loop->iteration }}">{{ $technology->label }}</label>
                     </div>
                 @endforeach
-                @error('technologys')
+                @error('technologies')
                 <small class="text-danger">{{ $message }}</small>
                 @enderror
             </div>

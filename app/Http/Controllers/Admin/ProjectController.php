@@ -31,8 +31,8 @@ class ProjectController extends Controller
     {
         $project = new Project();
         $categories = Category::orderBy('label')->get();
-        $technologys = Technology::select('id', 'label')->orderBy('id')->get();
-        return view('admin.projects.create', compact('project', 'technologys', 'categories'));
+        $technologies = Technology::select('id', 'label')->orderBy('id')->get();
+        return view('admin.projects.create', compact('project', 'technologies', 'categories'));
     }
 
     /**
@@ -40,13 +40,12 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        dd($request->all());
         $request->validate([
             'title' => 'required|string|unique:projects|min:5|max:20',
             'description' => 'required|string',
             'screen' => 'nullable|image|mimes:jpeg,jpg,png',
             'category_id' => 'nullable|exists:categories,id',
-            'technologys' => 'nullable|exists:technologys,id'
+            'technologies' => 'nullable|exists:technologies,id'
         ],[
             'title.required' => 'Title is mandatory',
             'title.unique' => 'Title has to be different from other projects',
@@ -73,6 +72,8 @@ class ProjectController extends Controller
         
         $project->save();
 
+        if(Arr::exists($data, 'technologies')) $project->technologies()->attach($data['technologies']);
+
         return to_route('admin.projects.show', $project->id)->with('type', 'success')->with('msg', 'New project created');
     }
 
@@ -90,8 +91,12 @@ class ProjectController extends Controller
     public function edit(Project $project)
     {
         $categories = Category::orderBy('label')->get();
-        $technologys = Technology::select('id', 'label')->get();
-        return view('admin.projects.edit', compact('project', 'technologys', 'categories'));
+        $technologies = Technology::select('id', 'label')->orderBy('id')->get();
+
+        $project_technologies = $project->technologies->pluck('id')->toArray();
+        
+
+        return view('admin.projects.edit', compact('project', 'technologies', 'categories', 'project_technologies'));
     }
 
     /**
@@ -104,7 +109,8 @@ class ProjectController extends Controller
             'title' => ['required', 'string', Rule::unique('projects')->ignore($project->id), 'min:5', 'max:20'],
             'description' => 'required|string',
             'screen' => 'nullable|image|mimes:jpeg,jpg,png',
-            'category_id' => 'nullable|exists:categories,id'
+            'category_id' => 'nullable|exists:categories,id',
+            'technologies' => 'nullable|exists:technologies,id'
         ],[
             'title.required' => 'Title is mandatory',
             'title.unique' => 'Title has to be different from other projects',
@@ -127,6 +133,9 @@ class ProjectController extends Controller
         }
 
         $project->update($data);
+
+        if(Arr::exists($data, 'technologies')) $project->technologies()->sync($data['technologies']);
+        else $project->technologies()->detach();
 
         return to_route('admin.projects.show', $project->id)->with('type', 'success')->with('msg', 'Project updated');
     }
